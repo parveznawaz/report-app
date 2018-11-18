@@ -1,0 +1,65 @@
+.report {
+  min-height: 82vh;
+}
+
+.landing {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 89vh;
+  margin-bottom: -50px;
+}
+
+.landing-inner {
+  padding-top: 80px;
+}
+
+/* .k-state-selected.k-state-focused {
+  background-color: #6F9300 !important;
+} */
+
+
+.gs1-blue-color{
+  color: #002c6c !important;
+}
+
+.gs1-grey-color{
+  color: #888B8D !important;
+}
+
+.gs1-color{
+  color: #888D8D !important;
+  background-color: #002c6c !important;
+}
+
+.k-menu:not(.k-context-menu)>.k-item:hover{
+  color: white !important;
+}
+
+.k-menu:not(.k-context-menu)>.k-item>.k-state-active{
+  color: white !important;
+}
+
+.k-menu:not(.k-context-menu)>.k-item{
+  color:  #f0f0f0 !important;
+}
+.k-dropdown {
+  background-color: transparent !important;
+}
+.k-dropdown .k-dropdown-wrap, .k-dropdown.k-state-border-down .k-dropdown-wrap.k-state-border-down {
+  padding: 0px 0px 0px 10px !important;
+  border: 1px solid #959694 !important;
+  border-radius: 5px !important;
+}
+.k-dropdown .k-dropdown-wrap .k-select, .k-ie .k-dropdown .k-dropdown-wrap .k-select, .k-ff .k-dropdown .k-dropdown-wrap .k-select {
+  background-color: #f6f7ef !important;
+  padding: 8px !important;
+  border-left: solid #959694 thin !important;
+  border-radius: 0px 5px 5px 0px !important;
+}
+[data-role="popup"] {
+    background-color: 888B8D !important;
+ }
+[data-role="popup"] ul li[class="k-item k-state-hover"], [data-role="popup"] ul li[class="k-item k-state-selected k-state-focused"] {
+  color: 888B8D !important;
+}
