@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
-import serviceRequestReducer from "./serviceRequestReducer";
+import selectedWeekReducer from "./selectedWeekReducer";
 import scheduleReportGroupByCompanyReducer from "./scheduleReportGroupByCompanyReducer";
+import weeksReducer from "./weeksReducer";
 
 export default combineReducers({
-  serviceRequest: serviceRequestReducer,
+  selectedWeek: selectedWeekReducer,
+  weeks : weeksReducer,
   scheduleReportGroupByCompany: scheduleReportGroupByCompanyReducer
 });

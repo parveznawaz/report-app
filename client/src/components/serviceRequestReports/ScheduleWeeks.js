@@ -11,32 +11,14 @@ import {
 import { DropDownList } from "@progress/kendo-react-dropdowns";
 
 class ScheduleWeeks extends Component {
-  constructor() {
-    super();
-    this.state = { selectedweek: null, isloading: true };
-  }
 
   componentDidMount() {
-    this.props.getServiceRequestWeekly();
+    if(this.props.weeks.data.length===0){
+      this.props.getServiceRequestWeekly();
+    }    
     this.props.getServiceRequestDefaultWeek();
   }
 
-  componentWillReceiveProps({ serviceRequest }) {
-    let selectedweek = _.find(
-      serviceRequest.weeks,
-      {'Schedid' : serviceRequest.selectedweekid}
-    );
-    if(selectedweek!=null){
-      this.setState(prevState => ({
-        ...this.state,
-        selectedweek: selectedweek
-      }));
-    }
-    
-    if(serviceRequest.weeks.length>0){
-      this.setState(prevState => ({ isloading: false }));
-    }
-  }
 
   onChange = e => {
     this.props.setServiceRequestSelectedWeek(e.target.value.Schedid);
@@ -47,28 +29,30 @@ class ScheduleWeeks extends Component {
       <div className="form-group">
         <p>Please select week</p>
         <DropDownList
-          data={this.props.serviceRequest.weeks}
+          data={this.props.weeks.data}
           textField="Label"
           dataItemKey="Schedid"
-          value={this.state.selectedweek}
+          value={_.find(this.props.weeks.data, {Schedid: this.props.selectedWeek.data})}
           onChange={this.onChange}
           style={{ width: "250px" }}
         />
-        {<LoadingPanel isloading={this.state.isloading}/>}
+        {<LoadingPanel isloading={this.props.weeks.isloading || this.props.selectedWeek.isloading} />}
       </div>
     );
   }
 }
 
 ScheduleWeeks.propTypes = {
-  serviceRequest: PropTypes.object.isRequired,
+  selectedWeek: PropTypes.object.isRequired,
+  weeks: PropTypes.object.isRequired,
   getServiceRequestWeekly: PropTypes.func.isRequired,
   getServiceRequestDefaultWeek: PropTypes.func.isRequired,
   setServiceRequestSelectedWeek: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  serviceRequest: state.serviceRequest
+  selectedWeek: state.selectedWeek,
+  weeks: state.weeks
 });
 
 export default connect(

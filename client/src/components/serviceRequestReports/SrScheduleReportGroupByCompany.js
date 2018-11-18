@@ -9,8 +9,7 @@ import {
 } from "@progress/kendo-react-grid";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { orderBy } from "@progress/kendo-data-query";
-// import { getScheduleReportGroupByCompany } from "../../redux/actions/serviceRequestActions";
-import { getScheduleReportGroupByCompany} from "../../redux/actions/reportActions";
+import { getScheduleReportGroupByCompany, clearScheduleReportGroupByCompany } from "../../redux/actions/reportActions";
 import _ from "lodash";
 import LoadingPanel from "../common/LoadingPanel";
 
@@ -18,46 +17,37 @@ class SrScheduleReportGroupByCompany extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gridData: [],
-      selectedweekid: null,
-      isloading: true,
       sort: [{ field: "Company", dir: "asc" }]
     };
   }
-  componentDidMount() {
-    // if (_.isNumber(this.state.selectedweekid)) {
-    //   this.props.getScheduleReportGroupByCompany(this.state.selectedweekid);
-    // }
-  }
- 
-  componentWillReceiveProps({ serviceRequest,scheduleReportGroupByCompany }) {
-    if (!_.isEmpty(serviceRequest)) {
-      if (_.isNumber(serviceRequest.selectedweekid)) {
-        this.setState(prevState => ({
-          selectedweekid: serviceRequest.selectedweekid
-        }));
-      }
-      //console.log(nextprop);
-      this.setState(prevState => ({
-        isloading: false,
-        gridData: scheduleReportGroupByCompany
-      }));
+
+  componentDidUpdate({ selectedWeek }, prevState) {
+    if (
+      !_.isEmpty(this.props.selectedWeek) &&
+      !_.isEqual(this.props.selectedWeek, selectedWeek) &&
+      !_.isNull(this.props.selectedWeek.data)
+    ) {
+      this.props.getScheduleReportGroupByCompany(this.props.selectedWeek.data);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      _.isNumber(this.state.selectedweekid) &&
-      prevState.selectedweekid !== this.state.selectedweekid
-    ) {
-      this.setState(prevState => ({ isloading: true }));
-      this.props.getScheduleReportGroupByCompany(this.state.selectedweekid);
-    }
+  shouldComponentUpdate({ selectedWeek, scheduleReportGroupByCompany }) {
+    return (
+      !_.isEqual(selectedWeek, this.props.selectedWeek) ||
+      !_.isEqual(
+        scheduleReportGroupByCompany,
+        this.props.scheduleReportGroupByCompany.data
+      )
+    );
+  }
+
+  componentWillUnmount(){
+   this.props.clearScheduleReportGroupByCompany();
   }
 
   _export;
   export = () => {
-    this._export.save(this.state.gridData);
+    this._export.save(this.props.scheduleReportGroupByCompany.data);
   };
   render() {
     let gridContent = (
@@ -68,7 +58,10 @@ class SrScheduleReportGroupByCompany extends Component {
           }}
         >
           <Grid
-            data={orderBy(this.state.gridData, this.state.sort)}
+            data={orderBy(
+              this.props.scheduleReportGroupByCompany.data,
+              this.state.sort
+            )}
             sortable
             sort={this.state.sort}
             onSortChange={e => {
@@ -110,7 +103,9 @@ class SrScheduleReportGroupByCompany extends Component {
         <div className="form-group">
           <ScheduleWeeks />
           {gridContent}
-          <LoadingPanel isloading={this.state.isloading} />
+          <LoadingPanel
+            isloading={this.props.scheduleReportGroupByCompany.isloading}
+          />
         </div>
       </div>
     );
@@ -118,19 +113,21 @@ class SrScheduleReportGroupByCompany extends Component {
 }
 
 SrScheduleReportGroupByCompany.propTypes = {
-  serviceRequest: PropTypes.object.isRequired,
-  scheduleReportGroupByCompany: PropTypes.array.isRequired,
-  getScheduleReportGroupByCompany: PropTypes.func.isRequired
+  selectedWeek: PropTypes.object.isRequired,
+  scheduleReportGroupByCompany: PropTypes.object.isRequired,
+  getScheduleReportGroupByCompany: PropTypes.func.isRequired,
+  clearScheduleReportGroupByCompany: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  serviceRequest: state.serviceRequest,
+  selectedWeek: state.selectedWeek,
   scheduleReportGroupByCompany: state.scheduleReportGroupByCompany
 });
 
 export default connect(
   mapStateToProps,
   {
-    getScheduleReportGroupByCompany
+    getScheduleReportGroupByCompany,
+    clearScheduleReportGroupByCompany
   }
 )(SrScheduleReportGroupByCompany);
